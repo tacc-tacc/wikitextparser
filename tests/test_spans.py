@@ -208,29 +208,29 @@ def test_keyword_and_positional_args_removal():
     t1, t2 = wt.templates
     t1_args = t1.arguments
     t2_args = t2.arguments
-    assert '1' == t1_args[2].name
-    assert 'kw2' == t1_args[3].name
-    assert '2' == t1_args[4].name
-    assert '1' == t2_args[0].name
-    assert '2' == t2_args[1].name
-    assert '1' == t2_args[2].name
+    assert '1' == t1_args[2].get_name(False)
+    assert 'kw2' == t1_args[3].get_name(False)
+    assert '2' == t1_args[4].get_name(False)
+    assert '1' == t2_args[0].get_name(False)
+    assert '2' == t2_args[1].get_name(False)
+    assert '1' == t2_args[2].get_name(False)
     del t1_args[0][:]
     t1_args = t1.arguments
     t2_args = t2.arguments
-    assert '1' == t1_args[0].name
-    assert 'kw2' == t1_args[2].name
+    assert '1' == t1_args[0].get_name(False)
+    assert 'kw2' == t1_args[2].get_name(False)
     assert '|pa2' == t1_args[3].string
-    assert '1' == t2_args[0].name
-    assert '2' == t2_args[1].name
-    assert '1' == t2_args[2].name
+    assert '1' == t2_args[0].get_name(False)
+    assert '2' == t2_args[1].get_name(False)
+    assert '1' == t2_args[2].get_name(False)
     del t1_args[1][:]
     t1_args = t1.arguments
     t2_args = t2.arguments
     assert 'text{{t1|1=|kw2=a|pa2}}{{t2|a|1|1=}}text' == wt.string
-    assert 'pa2' == t1_args[2].value
-    assert '1' == t1_args[2].name
-    assert 'a' == t2_args[0].value
-    assert '1' == t2_args[0].name
+    assert 'pa2' == t1_args[2].get_value(False)
+    assert '1' == t1_args[2].get_name(False)
+    assert 'a' == t2_args[0].get_value(False)
+    assert '1' == t2_args[0].get_name(False)
 
 
 def test_parser_function_regex():

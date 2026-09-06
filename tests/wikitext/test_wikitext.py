@@ -93,8 +93,8 @@ def test_overwriting_template_args():
     assert '|c' == c.string
     t.string = '{{t|0|a|b|c}}'
     assert '' == c.string
-    assert '0' == t.get_arg('1').value  # type: ignore
-    assert 'c' == t.get_arg('4').value  # type: ignore
+    assert '0' == t.get_arg('1').get_value(False)  # type: ignore
+    assert 'c' == t.get_arg('4').get_value(False)  # type: ignore
 
 
 def test_delitem():
@@ -217,12 +217,12 @@ def test_overwriting_or_extending_selfspan_will_cause_data_loss():
     wt = WikiText('{{t|{{#if:a|b|c}}}}')
     a = wt.templates[0].arguments[0]
     pf = wt.parser_functions[0]
-    a.value += ''
+    a.set_value(a.get_value(False) + '', False)
     assert '|{{#if:a|b|c}}' == a.string
     # Note that the old parser function is overwritten
     assert '' == pf.string
     pf = a.parser_functions[0]
-    a.value = 'a'
+    a.set_value('a', False)
     assert '' == pf.string
 
 

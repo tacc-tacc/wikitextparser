@@ -1,4 +1,4 @@
-from pytest import mark
+from pytest import mark, raises
 
 from wikitextparser import Template
 
@@ -70,7 +70,7 @@ def test_normal_name():
 
 
 def test_keyword_and_positional_args():
-    assert '1' == Template('{{t|kw=a|1=|pa|kw2=a|pa2}}').arguments[2].name
+    assert '1' == Template('{{t|kw=a|1=|pa|kw2=a|pa2}}').arguments[2].get_name(False)
 
 
 def test_rm_first_of_dup_args():
@@ -235,6 +235,9 @@ def test_set_arg():
     t = Template('{{t\n  | p1   = v1\n  | p22  = v2\n}}')
     t.set_arg('z', 'z', preserve_spacing=True)
     assert '{{t\n  | p1   = v1\n  | p22  = v2\n  | z    = z\n}}' == t.string
+    with raises(ValueError):
+        t = Template('{{t|a|b|c}}')
+        t.set_arg('3', 'z', False)
 
 
 @mark.parametrize('newline', ['\n', '\r', '\r\n'])
@@ -307,8 +310,8 @@ def test_force_new_to_positional_when_old_is_keyword():
 
 def test_nowiki_makes_equal_ineffective():
     a = Template('{{text|1<nowiki>=</nowiki>g}}').arguments[0]
-    assert a.value == '1<nowiki>=</nowiki>g'
-    assert a.name == '1'
+    assert a.get_value(False) == '1<nowiki>=</nowiki>g'
+    assert a.get_name(False) == '1'
 
 
 def test_not_name_and_positional_is_none():
@@ -343,3 +346,8 @@ def test_preserve_spacing_left_and_right():
 
 def test_invalid_normal_name():  # 105
     assert '' == Template('{{template:}}').normal_name(capitalize=True)
+
+
+def test_get_last_positional_index():
+    t = Template('{{t|a|b|c=d}}')
+    assert t.get_last_positional_index() == 2

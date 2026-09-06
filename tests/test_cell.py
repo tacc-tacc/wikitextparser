@@ -81,7 +81,7 @@ def test_update_match_from_shadow():
     assert c is not None
     assert c.value == '{{text|s}}'
     t = c.templates[0]
-    t.arguments[0].value = 't'
+    t.arguments[0].set_value('t', False)
     assert c.value == '{{text|t}}'
 
 
